@@ -62,7 +62,7 @@ async def on_ready():
     print("起動")
     # スケジュールされたタスクを追加
     scheduler.add_job(contest_alert, 'cron', day_of_week='mon-fri', hour=19, minute=0)
-    scheduler.add_job(ac_alert, 'interval', minutes=5)
+    scheduler.add_job(ac_alert, 'interval', hours=2)
 
     # スケジューラを開始
     scheduler.start()
