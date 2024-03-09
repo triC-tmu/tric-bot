@@ -28,11 +28,10 @@ async def send_message(message, channel_id=CHANNEL_ID):
 async def ac_alert():
     ac_submissions = get_members_ac()
     for submission in ac_submissions:
-        submission = submission[0]
-
-        if submission["result"] == "AC":
-            msg = f"{submission['user_id']}が{submission['problem_id']}をACしました。\n https://atcoder.jp/contests/{submission['contest_id']}/submissions/{submission['id']}"
-            await send_message(msg)
+        for s in submission:
+            if s["result"] == "AC":
+                msg = f"{s['user_id']}が{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}"
+                await send_message(msg)
 
 async def atcoder_contest():
     contests_info = get_atcoder_contests()
