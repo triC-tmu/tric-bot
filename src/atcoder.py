@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-import sqlite3
+from time import sleep
 from triC_member import get_members
 
 
@@ -52,6 +52,7 @@ def get_ac_submissions(user):
     tow_hour_ago = now - 7200
     url = f"https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user={user}&from_second={tow_hour_ago}"
     response = requests.get(url)
+    sleep(1)
     return response.json()
 
 
