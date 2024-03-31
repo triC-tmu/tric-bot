@@ -1,4 +1,3 @@
 .env
 sqlite3.db
 .venv
-src/__pycache__
