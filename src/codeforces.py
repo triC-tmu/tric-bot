@@ -1,6 +1,7 @@
-import requests
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
+
+import requests
 
 
 def get_codeforces_contests():
