@@ -2,6 +2,7 @@ import requests
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
+
 def get_codeforces_contests():
     """codeforcesの翌日開催のコンテスト情報を取得する"""
     url = "https://codeforces.com/api/contest.list"
@@ -23,13 +24,18 @@ def get_codeforces_contests():
         start_time = contest["startTimeSeconds"]
         contest_name = contest["name"]
         url = f"https://codeforces.com/contest/{contest['id']}"
-        if int(tomorrow_start.timestamp()) <= start_time < int(tomorrow_end.timestamp()):
+        if (
+            int(tomorrow_start.timestamp())
+            <= start_time
+            < int(tomorrow_end.timestamp())
+        ):
             dt_utc = datetime.fromtimestamp(start_time, tz=timezone.utc)
             dt_jst = dt_utc.astimezone(ZoneInfo("Asia/Tokyo"))
-            formatted_dt_jst = dt_jst.strftime('%Y-%m-%d %H:%M:%S JST')
+            formatted_dt_jst = dt_jst.strftime("%Y-%m-%d %H:%M:%S JST")
             contests_info.append((contest_name, formatted_dt_jst, url))
 
     return contests_info
+
 
 if __name__ == "__main__":
     contests_info = get_codeforces_contests()
