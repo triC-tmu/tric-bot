@@ -1,7 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from time import sleep
+
+import requests
+from bs4 import BeautifulSoup
+
 from triC_member import get_members
 
 

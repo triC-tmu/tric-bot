@@ -1,16 +1,18 @@
-import discord
-from discord import app_commands
-from triC_member import add_member, get_members
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from atcoder import get_members_ac, get_atcoder_contests
-from codeforces import get_codeforces_contests
-from dotenv import load_dotenv
 import os
+
+import discord
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from discord import app_commands
+from dotenv import load_dotenv
+
+from atcoder import get_atcoder_contests, get_members_ac
+from codeforces import get_codeforces_contests
+from triC_member import add_member, get_members
 
 load_dotenv()
 
-DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-CHANNEL_ID = os.getenv('CHANNEL_ID')
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+CHANNEL_ID = os.getenv("CHANNEL_ID")
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -25,6 +27,7 @@ async def send_message(message, channel_id=CHANNEL_ID):
     else:
         print(f"Channel with ID {channel_id} not found.")
 
+
 async def ac_alert():
     ac_submissions = get_members_ac()
     for submission in ac_submissions:
@@ -33,11 +36,15 @@ async def ac_alert():
                 msg = f"{s['user_id']}が{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}"
                 await send_message(msg)
 
+
 async def atcoder_contest():
     contests_info = get_atcoder_contests()
     for name, start_time, url in contests_info:
-        await send_message(f"{name}が開催されます \n 開催日時: {start_time}, https://atcoder.jp{url}")
+        await send_message(
+            f"{name}が開催されます \n 開催日時: {start_time}, https://atcoder.jp{url}"
+        )
     return contests_info
+
 
 async def codeforces_contest():
     contests_info = get_codeforces_contests()
@@ -45,23 +52,27 @@ async def codeforces_contest():
         await send_message(f"{name}が開催されます \n 開催日時: {start_time}, {url}")
     return contests_info
 
+
 async def yukicoder_contest():
     pass
+
 
 async def contest_alert():
     # 毎日10時にcronで実行する
     await atcoder_contest()
     await codeforces_contest()
 
+
 # スケジューラのインスタンスを作成
 scheduler = AsyncIOScheduler()
+
 
 @client.event
 async def on_ready():
     print("起動")
     # スケジュールされたタスクを追加
-    scheduler.add_job(contest_alert, 'cron', hour=19, minute=0)
-    scheduler.add_job(ac_alert, 'interval', hours=2)
+    scheduler.add_job(contest_alert, "cron", hour=19, minute=0)
+    scheduler.add_job(ac_alert, "interval", hours=2)
 
     # スケジューラを開始
     scheduler.start()
@@ -76,9 +87,7 @@ async def ping_command(interaction: discord.Interaction):
 @tree.command(name="add_member", description="メンバーを追加します。")
 async def add_member_command(interaction: discord.Interaction, user_id: str):
     add_member(user_id)
-    await interaction.response.send_message(
-        f"{user_id}を追加しました。", ephemeral=False
-    )
+    await interaction.response.send_message(f"{user_id}を追加しました。", ephemeral=False)
 
 
 @tree.command(name="get_members", description="メンバー一覧を取得します。")
