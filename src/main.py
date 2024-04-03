@@ -1,4 +1,5 @@
 import os
+import time
 
 import discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -33,6 +34,7 @@ async def ac_alert():
     flat_list = [item for sublist in ac_submissions for item in sublist]
     ac_list = [submission["problem_id"] for submission in flat_list]
     ac_submissions_difficulty = get_problems_difficulty(ac_list)
+    time.sleep(1)
     for submission in ac_submissions:
         msg = ""
         for s in submission:
