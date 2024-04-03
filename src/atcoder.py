@@ -76,7 +76,7 @@ def get_problems_difficulty(problem_list: list) -> dict:
 
     Args:
         problem_list List[str]: difficultyを取得したい問題のidの配列
-            problem_list = abc138_a
+            problem_list = ["abc138_a", "abc_138_d"]
 
     Returns:
         Dict[str, int]: 問題名がkey, difficultyがvalueの連想配列
