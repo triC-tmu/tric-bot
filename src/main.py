@@ -5,7 +5,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord import app_commands
 from dotenv import load_dotenv
 
-from atcoder import get_atcoder_contests, get_members_ac
+from atcoder import get_atcoder_contests, get_members_ac, get_problems_difficulty
 from codeforces import get_codeforces_contests
 from triC_member import add_member, get_members
 
@@ -30,11 +30,32 @@ async def send_message(message, channel_id=CHANNEL_ID):
 
 async def ac_alert():
     ac_submissions = get_members_ac()
+    flat_list = [item for sublist in ac_submissions for item in sublist]
+    ac_list = [submission["problem_id"] for submission in flat_list]
+    ac_submissions_difficulty = get_problems_difficulty(ac_list)
     for submission in ac_submissions:
+        msg = ""
         for s in submission:
             if s["result"] == "AC":
-                msg = f"{s['user_id']}が{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}"
-                await send_message(msg)
+                difficulty = ac_submissions_difficulty[s["problem_id"]]
+                if difficulty < 400:
+                    color = ":hai:"
+                elif difficulty < 800:
+                    color = ":cha:"
+                elif difficulty < 1200:
+                    color = ":midori:"
+                elif difficulty < 1600:
+                    color = ":mizu:"
+                elif difficulty < 2000:
+                    color = ":ao:"
+                elif difficulty < 2400:
+                    color = ":ki:"
+                elif difficulty < 2800:
+                    color = ":daidai:"
+                else:
+                    color = ":aka:"
+                msg += f"{s['user_id']}が{color}{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}\n"
+        await send_message(msg)
 
 
 async def atcoder_contest():
@@ -87,7 +108,9 @@ async def ping_command(interaction: discord.Interaction):
 @tree.command(name="add_member", description="メンバーを追加します。")
 async def add_member_command(interaction: discord.Interaction, user_id: str):
     add_member(user_id)
-    await interaction.response.send_message(f"{user_id}を追加しました。", ephemeral=False)
+    await interaction.response.send_message(
+        f"{user_id}を追加しました。", ephemeral=False
+    )
 
 
 @tree.command(name="get_members", description="メンバー一覧を取得します。")
