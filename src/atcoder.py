@@ -1,3 +1,5 @@
+import json
+import math
 from datetime import datetime, timedelta
 from time import sleep
 
@@ -48,13 +50,13 @@ def get_atcoder_contests():
     return contests_info
 
 
-def get_ac_submissions(user):
+def get_ac_submissions(user, sleep_time=1):
     """2h前から現在までのAC提出を取得する"""
     now = int(datetime.now().timestamp())
     tow_hour_ago = now - 7200
     url = f"https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user={user}&from_second={tow_hour_ago}"
     response = requests.get(url)
-    sleep(1)
+    sleep(sleep_time)
     return response.json()
 
 
@@ -65,6 +67,39 @@ def get_members_ac():
         ac = get_ac_submissions(member)
         ac_submissions.append(ac)
     return ac_submissions
+
+
+def get_problems_difficulty(problem_list: list) -> dict:
+    """問題のdifficultyを取得する
+
+    問題のdifficulty一覧を取得するAPIを叩いて特定の問題のdifficultyを返す
+
+    Args:
+        problem_list List[str]: difficultyを取得したい問題のidの配列
+            problem_list = ["abc138_a", "abc_138_d"]
+
+    Returns:
+        Dict[str, int]: 問題名がkey, difficultyがvalueの連想配列
+    """
+    endpoint = "https://kenkoooo.com/atcoder/resources/problem-models.json"
+    response = requests.get(endpoint)
+    all_problems_model = json.loads(response.text)
+    try:
+        target_problems_difficulty = {
+            problem_name: (
+                all_problems_model[problem_name]["difficulty"]
+                if all_problems_model[problem_name]["difficulty"] > 400
+                else round(
+                    400
+                    / math.exp(1 - all_problems_model[problem_name]["difficulty"] / 400)
+                )
+            )
+            for problem_name in problem_list
+        }
+    except KeyError:
+        print(f"error: key was not found")
+    # https://github-wiki-see.page/m/sirogamichandayo/atcoder-diff-problems-go/wiki/diff%E3%81%AE%E3%83%9E%E3%82%A4%E3%83%8A%E3%82%B9%E3%82%92%E7%84%A1%E3%81%8F%E3%81%99%E8%A8%88%E7%AE%97%E5%BC%8F
+    return target_problems_difficulty
 
 
 if __name__ == "__main__":
