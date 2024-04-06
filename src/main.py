@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from atcoder import get_atcoder_contests, get_members_ac, get_problems_difficulty
 from codeforces import get_codeforces_contests
+from yukicoder import get_yukicoder_contests
 from triC_member import add_member, get_members
 
 load_dotenv()
@@ -77,11 +78,16 @@ async def codeforces_contest():
 
 
 async def yukicoder_contest():
-    pass
+    contests_info = get_yukicoder_contests()
+    for name, start_time, url in contests_info:
+        print(name,start_time,url)
+        await send_message(f"{name}が開催されます \n 開催日時: {start_time}, {url}")
+    return contests_info
 
 
 async def contest_alert():
     # 毎日10時にcronで実行する
+    await yukicoder_contest() #後で最後にする
     await atcoder_contest()
     await codeforces_contest()
 
@@ -96,6 +102,9 @@ async def on_ready():
     # スケジュールされたタスクを追加
     scheduler.add_job(contest_alert, "cron", hour=19, minute=0)
     scheduler.add_job(ac_alert, "interval", hours=2)
+
+    #for yukicoder test
+    scheduler.add_job(contest_alert, "interval",minutes = 1)
 
     # スケジューラを開始
     scheduler.start()
