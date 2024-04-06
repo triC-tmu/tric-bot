@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from atcoder import get_atcoder_contests, get_members_ac, get_problems_difficulty
 from codeforces import get_codeforces_contests
+from yukicoder import get_yukicoder_contests
 from triC_member import add_member, get_members
 
 load_dotenv()
@@ -23,6 +24,7 @@ tree = app_commands.CommandTree(client)
 async def send_message(message, channel_id=CHANNEL_ID):
     """指定したチャンネルIDにメッセージを送信する関数"""
     channel = client.get_channel(int(channel_id))
+    print(channel)
     if channel:
         await channel.send(message)
     else:
@@ -77,13 +79,17 @@ async def codeforces_contest():
 
 
 async def yukicoder_contest():
-    pass
+    contests_info = get_yukicoder_contests()
+    for name, start_time, url in contests_info:
+        await send_message(f"{name}が開催されます \n 開催日時: {start_time}, {url}")
+    return contests_info
 
 
 async def contest_alert():
     # 毎日10時にcronで実行する
     await atcoder_contest()
     await codeforces_contest()
+    await yukicoder_contest() 
 
 
 # スケジューラのインスタンスを作成
