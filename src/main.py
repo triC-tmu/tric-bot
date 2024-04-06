@@ -24,6 +24,7 @@ tree = app_commands.CommandTree(client)
 async def send_message(message, channel_id=CHANNEL_ID):
     """指定したチャンネルIDにメッセージを送信する関数"""
     channel = client.get_channel(int(channel_id))
+    print(channel)
     if channel:
         await channel.send(message)
     else:
@@ -80,16 +81,15 @@ async def codeforces_contest():
 async def yukicoder_contest():
     contests_info = get_yukicoder_contests()
     for name, start_time, url in contests_info:
-        print(name,start_time,url)
         await send_message(f"{name}が開催されます \n 開催日時: {start_time}, {url}")
     return contests_info
 
 
 async def contest_alert():
     # 毎日10時にcronで実行する
-    await yukicoder_contest() #後で最後にする
     await atcoder_contest()
     await codeforces_contest()
+    await yukicoder_contest() 
 
 
 # スケジューラのインスタンスを作成
@@ -102,9 +102,6 @@ async def on_ready():
     # スケジュールされたタスクを追加
     scheduler.add_job(contest_alert, "cron", hour=19, minute=0)
     scheduler.add_job(ac_alert, "interval", hours=2)
-
-    #for yukicoder test
-    scheduler.add_job(contest_alert, "interval",minutes = 1)
 
     # スケジューラを開始
     scheduler.start()
