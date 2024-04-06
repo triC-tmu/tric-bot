@@ -56,10 +56,10 @@ class TestMain(IsolatedAsyncioTestCase):
 
         expected_calls = [
             call(
-                "user1が:hai:abc138_aをACしました。\n https://atcoder.jp/contests/abc138/submissions/12345\n"
+                "user1が<:hai:1225032949964083251>abc138_aをACしました。\n https://atcoder.jp/contests/abc138/submissions/12345\n"
             ),
             call(
-                "user2が:hai:abc138_aをACしました。\n https://atcoder.jp/contests/abc138/submissions/12345\nuser2が:midori:abc138_dをACしました。\n https://atcoder.jp/contests/abc138/submissions/67890\n"
+                "user2が<:hai:1225032949964083251>abc138_aをACしました。\n https://atcoder.jp/contests/abc138/submissions/12345\nuser2が<:midori:1225032946184880179>abc138_dをACしました。\n https://atcoder.jp/contests/abc138/submissions/67890\n"
             ),
         ]
 
