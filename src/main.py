@@ -26,7 +26,10 @@ async def send_message(message, channel_id=CHANNEL_ID):
     channel = client.get_channel(int(channel_id))
     print(channel)
     if channel:
-        await channel.send(message)
+        if message:
+            await channel.send(message)
+        else:
+            print("empyt message")
     else:
         print(f"Channel with ID {channel_id} not found.")
 
@@ -59,7 +62,8 @@ async def ac_alert():
                 else:
                     color = "<:aka:1225032933606424576>"
                 msg += f"{s['user_id']}が{color}{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}\n"
-        await send_message(msg)
+        if msg:
+            await send_message(msg)
 
 
 async def atcoder_contest():
