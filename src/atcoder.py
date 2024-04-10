@@ -96,10 +96,11 @@ def get_problems_difficulty(problem_list: list) -> dict:
             )
             for problem_name in problem_list
         }
+        return target_problems_difficulty
     except KeyError:
         print(f"error: key was not found")
+        return {}
     # https://github-wiki-see.page/m/sirogamichandayo/atcoder-diff-problems-go/wiki/diff%E3%81%AE%E3%83%9E%E3%82%A4%E3%83%8A%E3%82%B9%E3%82%92%E7%84%A1%E3%81%8F%E3%81%99%E8%A8%88%E7%AE%97%E5%BC%8F
-    return target_problems_difficulty
 
 
 if __name__ == "__main__":
