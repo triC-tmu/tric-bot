@@ -44,23 +44,26 @@ async def ac_alert():
         msg = ""
         for s in submission:
             if s["result"] == "AC":
-                difficulty = ac_submissions_difficulty[s["problem_id"]]
-                if difficulty < 400:
-                    color = "<:hai:1225032949964083251>"
-                elif difficulty < 800:
-                    color = "<:cha:1225032948290687046>"
-                elif difficulty < 1200:
-                    color = "<:midori:1225032946184880179>"
-                elif difficulty < 1600:
-                    color = "<:mizu:1225032939683844108>"
-                elif difficulty < 2000:
-                    color = "<:ao:1225032938157248563>"
-                elif difficulty < 2400:
-                    color = "<:ki:1225032936634585128>"
-                elif difficulty < 2800:
-                    color = "<:daidai:1225032935111921744>"
+                if s["problem_id"] in ac_submissions_difficulty:
+                    difficulty = ac_submissions_difficulty[s["problem_id"]]
+                    if difficulty < 400:
+                        color = "<:hai:1225032949964083251>"
+                    elif difficulty < 800:
+                        color = "<:cha:1225032948290687046>"
+                    elif difficulty < 1200:
+                        color = "<:midori:1225032946184880179>"
+                    elif difficulty < 1600:
+                        color = "<:mizu:1225032939683844108>"
+                    elif difficulty < 2000:
+                        color = "<:ao:1225032938157248563>"
+                    elif difficulty < 2400:
+                        color = "<:ki:1225032936634585128>"
+                    elif difficulty < 2800:
+                        color = "<:daidai:1225032935111921744>"
+                    else:
+                        color = "<:aka:1225032933606424576>"
                 else:
-                    color = "<:aka:1225032933606424576>"
+                    color = ""
                 msg += f"{s['user_id']}が{color}{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}\n"
         if msg:
             await send_message(msg)
