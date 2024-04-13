@@ -80,6 +80,7 @@ async def ac_alert():
         if msg:
             await send_embedded_message(
                 title=f"{s['user_id']}が{len(submission)}問<:accepted:1110414595316781147>しました",
+                url="",
                 description=msg,
                 color=0x5cb85c
                 )
