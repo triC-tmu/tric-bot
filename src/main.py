@@ -33,6 +33,15 @@ async def send_message(message, channel_id=CHANNEL_ID):
     else:
         print(f"Channel with ID {channel_id} not found.")
 
+async def send_embedded_message(title, description, color=0xffffff,channel_id=CHANNEL_ID):
+    """指定したチャンネルIDに埋め込みメッセージをembeddedで送信する関数"""
+    channel = client.get_channel(int(channel_id))
+    if channel:
+        embed = discord.Embed(title=title, description=description, color=color)
+        await channel.send(embed=embed)
+    else:
+        print(f"Channel with ID {channel_id} not found.")
+
 
 async def ac_alert():
     ac_submissions = get_members_ac()
@@ -64,16 +73,22 @@ async def ac_alert():
                         color = "<:aka:1225032933606424576>"
                 else:
                     color = ""
-                msg += f"{s['user_id']}が{color}{s['problem_id']}をACしました。\n https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}\n"
+                msg += f"{s['problem_id']}{color} https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}\n"
         if msg:
-            await send_message(msg)
+            await send_embedded_message(
+                title=f"{s['user_id']}が{len(submission)}問<:accepted:1110414595316781147>しました",
+                description=msg,
+                color=0x5cb85c
+                )
 
 
 async def atcoder_contest():
     contests_info = get_atcoder_contests()
     for name, start_time, url in contests_info:
-        await send_message(
-            f"{name}が開催されます \n 開催日時: {start_time}, https://atcoder.jp{url}"
+        await send_embedded_message(
+            title=f"{name}が開催されます",
+            description=f"開催日時: {start_time}, https://atcoder.jp{url}",
+            color=0xffffff
         )
     return contests_info
 
@@ -81,14 +96,22 @@ async def atcoder_contest():
 async def codeforces_contest():
     contests_info = get_codeforces_contests()
     for name, start_time, url in contests_info:
-        await send_message(f"{name}が開催されます \n 開催日時: {start_time}, {url}")
+        await send_embedded_message(
+            title=f"{name}が開催されます",
+            description=f"開催日時: {start_time}, {url}",
+            color=0x3b5998
+            )
     return contests_info
 
 
 async def yukicoder_contest():
     contests_info = get_yukicoder_contests()
     for name, start_time, url in contests_info:
-        await send_message(f"{name}が開催されます \n 開催日時: {start_time}, {url}")
+        await send_embedded_message(
+            title=f"{name}が開催されます",
+            description=f"開催日時: {start_time}, {url}",
+            color=0xc5dbee
+            )
     return contests_info
 
 
