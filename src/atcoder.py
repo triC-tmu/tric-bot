@@ -79,23 +79,26 @@ def get_problems_difficulty(problem_list: list) -> dict:
             problem_list = ["abc138_a", "abc_138_d"]
 
     Returns:
-        Dict[str, int]: 問題名がkey, difficultyがvalueの連想配列
+        Dict[str, int]: 問題名がkey, difficultyがvalueの連想配列 (difficultyが得られない場合はNone)
     """
     endpoint = "https://kenkoooo.com/atcoder/resources/problem-models.json"
     response = requests.get(endpoint)
     all_problems_model = json.loads(response.text)
+
+    target_problems_difficulty = dict()
+
     try:
-        target_problems_difficulty = {
-            problem_name: (
-                all_problems_model[problem_name]["difficulty"]
-                if all_problems_model[problem_name]["difficulty"] > 400
-                else round(
-                    400
-                    / math.exp(1 - all_problems_model[problem_name]["difficulty"] / 400)
-                )
-            )
-            for problem_name in problem_list
-        }
+        for problem_name in problem_list:
+            if problem_name in all_problems_model and "difficulty" in all_problems_model[problem_name]:
+                diff = all_problems_model[problem_name]["difficulty"]
+                if diff <= 400:
+                    diff = round(400 / math.exp(1 - diff / 400))
+            
+                target_problems_difficulty[problem_name] = diff 
+
+            else:
+                target_problems_difficulty[problem_name] = None
+                
         return target_problems_difficulty
     except KeyError:
         print(f"error: key was not found")

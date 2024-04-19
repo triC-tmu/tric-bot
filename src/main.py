@@ -33,7 +33,8 @@ async def send_message(message, channel_id=CHANNEL_ID):
     else:
         print(f"Channel with ID {channel_id} not found.")
 
-async def send_embedded_message(title, url, description, color=0xffffff,channel_id=CHANNEL_ID):
+
+async def send_embedded_message(title, url, description, color=0xffffff, channel_id=CHANNEL_ID):
     """指定したチャンネルIDに埋め込みメッセージをembeddedで送信する関数"""
     channel = client.get_channel(int(channel_id))
     if channel:
@@ -51,13 +52,16 @@ async def ac_alert():
     flat_list = [item for sublist in ac_submissions for item in sublist]
     ac_list = [submission["problem_id"] for submission in flat_list]
     ac_submissions_difficulty = get_problems_difficulty(ac_list)
+    ac_count = 0
+
     time.sleep(1)
     for submission in ac_submissions:
         msg = ""
         for s in submission:
             if s["result"] == "AC":
-                if s["problem_id"] in ac_submissions_difficulty:
+                if s["problem_id"] in ac_submissions_difficulty and ac_submissions_difficulty[s["problem_id"]] is not None:
                     difficulty = ac_submissions_difficulty[s["problem_id"]]
+
                     if difficulty < 400:
                         color = "<:hai:1225032949964083251>"
                     elif difficulty < 800:
@@ -77,9 +81,10 @@ async def ac_alert():
                 else:
                     color = ""
                 msg += f"{s['problem_id']}{color} https://atcoder.jp/contests/{s['contest_id']}/submissions/{s['id']}\n"
+                ac_count += 1
         if msg:
             await send_embedded_message(
-                title=f"{s['user_id']}が{len(submission)}問<:accepted:1110414595316781147>しました",
+                title=f"{s['user_id']}が{ac_count}問<:accepted:1110414595316781147>しました",
                 url="",
                 description=msg,
                 color=0x5cb85c
